@@ -1,0 +1,120 @@
+// Webhook node: Capture INPUT data (received from ServiceNow)
+[
+  {
+    "output": [
+      {
+        "type": "reasoning_content",
+        "reasoningText": {
+          "text": "The user wants processing the delivery route. We already called the three tools: execute_route, notify_delivery_delay, update_execution_status. They responded with success messages. So we need to produce a final response summarizing that the route has been executed, the customer notified, and status updated to dispatched. Provide maybe reference IDs. So respond accordingly."
+        }
+      },
+      {
+        "type": "text",
+        "text": "The delivery route has been successfully processed:\n\n* **Logistics MCP** – Route executed for truck 3785 on route 632193 using option **opt‑1** (route 12, 124 mi, ETA 441 min).  \n* **Retail MCP** – Customer notification sent (notification ID `a17a69ec-9d6b-49ae-849a-b2dadf57fa15`).  \n* **ServiceNow MCP** – Status for route 632193 updated to **“dispatched.”**  \n\nAll three MCP integrations have completed without errors. Let me know if you need any additional actions or details."
+      }
+    ]
+  }
+]
+// Output
+[
+  {
+    "headers": {
+      "host": "luwammikael.app.n8n.cloud",
+      "user-agent": "ServiceNow/1.0",
+      "content-length": "134",
+      "accept": "application/json",
+      "accept-encoding": "gzip, br",
+      "cdn-loop": "cloudflare; loops=1; subreqs=1",
+      "cf-connecting-ip": "4.223.224.92",
+      "cf-ew-via": "15",
+      "cf-ipcountry": "SE",
+      "cf-ray": "98b15608f4d32767-ARN",
+      "cf-visitor": "{\"scheme\":\"https\"}",
+      "cf-worker": "n8n.cloud",
+      "content-type": "application/json",
+      "x-forwarded-for": "4.223.224.92, 104.23.221.13",
+      "x-forwarded-host": "luwammikael.app.n8n.cloud",
+      "x-forwarded-port": "443",
+      "x-forwarded-proto": "https",
+      "x-forwarded-server": "traefik-prod-users-gwc-50-54974b54fc-rrz55",
+      "x-is-trusted": "yes",
+      "x-real-ip": "4.223.224.92",
+      "x-snc-integration-source": "0d8d1433c322a650d7299dcd2b01317e"
+    },
+    "params": {},
+    "query": {},
+    "body": {
+      "route_id": "632193",
+      "truck_id": "3785",
+      "chosen_option": {
+        "option_id": "opt-1",
+        "route_number": 12,
+        "distance_miles": 124,
+        "eta_minutes": 441
+      }
+    },
+    "webhookUrl": "https://luwammikael.app.n8n.cloud/webhook/deliverydelay",
+    "executionMode": "production"
+  }
+]
+
+// AI Agent node: Capture OUTPUT data (coordination decisions)
+
+[
+  {
+    "output": [
+      {
+        "type": "reasoning_content",
+        "reasoningText": {
+          "text": "The user wants processing the delivery route. We already called the three tools: execute_route, notify_delivery_delay, update_execution_status. They responded with success messages. So we need to produce a final response summarizing that the route has been executed, the customer notified, and status updated to dispatched. Provide maybe reference IDs. So respond accordingly."
+        }
+      },
+      {
+        "type": "text",
+        "text": "The delivery route has been successfully processed:\n\n* **Logistics MCP** – Route executed for truck 3785 on route 632193 using option **opt‑1** (route 12, 124 mi, ETA 441 min).  \n* **Retail MCP** – Customer notification sent (notification ID `a17a69ec-9d6b-49ae-849a-b2dadf57fa15`).  \n* **ServiceNow MCP** – Status for route 632193 updated to **“dispatched.”**  \n\nAll three MCP integrations have completed without errors. Let me know if you need any additional actions or details."
+      }
+    ]
+  }
+]
+
+// Logistics MCP Client: Capture OUTPUT data (communications sent)
+
+[
+    {
+        "response":[
+            {
+            "type": "text",
+            "text": "{\n  \"ok\": true,\n  \"message\": \"route selected\",\n  \"route_id\": \"632193\",\n  \"truck_id\": 
+                    \"3785\",\n  \"chosen_option\": {\n    \"option_id\": \"opt-1\",\n    \"route_number\": 12,\n    
+                    \"distance_miles\": 124,\n    \"eta_minutes\": 441\n  }\n}"
+            }
+        ]
+    }
+]
+// Retail MCP Client: Capture OUTPUT data (communications sent)
+[
+    {
+        "response":[
+            {
+                "type": "text",
+                "text": "{\n  \"ok\": true,\n  \"notification_id\": \"a17a69ec-9d6b-49ae-849a-b2dadf57fa15\",\n  \"received_at\":
+                        \"2025-10-07T23:56:40.862141Z\",\n  \"route_id\": \"632193\",\n  \"truck_id\": \"3785\",\n  \"chosen_option\": {\n    \"option_id\": \"opt-1\",\n    \"route_number\": 12,\n    \"distance_miles\": 124,\n    \"eta_minutes\": 
+                        441\n  }\n}"
+            }
+        ]
+    }
+]
+// ServiceNow MCP Client: Capture OUTPUT data (status updates sent)
+[
+    {
+        "response": [
+            {
+                "type": "text",
+                "text": "{\n  \"route_id\": \"632193\",\n  \"updates\": [\n    {\n      \"student_id\": \"sn-0006\",\n
+                        \"instance\": \"https://kura-labs-jul-4728-0006.lab.service-now.com\",\n      \"updated\": true,\n      
+                        \"status_code\": 200,\n      \"sys_id\": \"e7bbe7dd9fd032107f44b2596124ab46\",\n      \"error\": null\n    }\n  ]
+                        \n}"
+            }
+        ]
+    }
+]
