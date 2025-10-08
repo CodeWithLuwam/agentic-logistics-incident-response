@@ -1,0 +1,191 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "deliverydelay",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ff122304-c496-48f5-9a43-761c7bc421d4",
+      "name": "Webhook",
+      "webhookId": "13222f24-e53a-4348-b102-6e3060d0c1ef"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Process this delivery routing:\n\n{{ JSON.stringify($json.body) }} \n\nCall all three MCP client tools now.\n\nFor the Logistics MCP use this payload: \n {{ $json.body }}\n\nFor the Retail MCP use this payload: \n {{ $json.body }}\n\nFor the ServiceNow MCP use this payload: \n{\n  route_id: {{ $json.body.route_id }},\n  status: \"dispatched\"\n}",
+        "options": {
+          "systemMessage": "You coordinate external system integration for PepsiCo delivery routing.\n\nWhen you receive delivery data, you must:\n1. Use the Logistics MCP Client tool to execute the route\n2. Use the Retail MCP Client tool to notify the customer\n3. Use the ServiceNow MCP Client tool to update status to \"dispatched\"\n\nAlways call all three tools in sequence with the data provided."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "cadbfbe8-c585-4f78-8720-db66683d1461",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai.gpt-oss-120b-1:0",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAwsBedrock",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        208
+      ],
+      "id": "dd7881d6-b09a-437f-9e79-bfb3c8064b0f",
+      "name": "AWS Bedrock Chat Model",
+      "credentials": {
+        "aws": {
+          "id": "xzaTrZ60bX2X6bUa",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://34.197.44.143:8001/mcp",
+        "serverTransport": "httpStreamable",
+        "include": "selected",
+        "includeTools": [
+          "execute_route"
+        ],
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        352
+      ],
+      "id": "1d4a28dd-77fa-4909-9edf-112e22d9b768",
+      "name": "Logistics MCP Client"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://34.197.44.143:8002/mcp ",
+        "serverTransport": "httpStreamable",
+        "include": "selected",
+        "includeTools": [
+          "notify_delivery_delay"
+        ],
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        224
+      ],
+      "id": "7bd890f2-1145-4709-bb3e-9713fcc24500",
+      "name": "Retail MCP Client"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://34.197.44.143:8000/mcp",
+        "serverTransport": "httpStreamable",
+        "authentication": "bearerAuth",
+        "include": "selected",
+        "includeTools": [
+          "update_execution_status"
+        ],
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        544,
+        240
+      ],
+      "id": "01562365-0edb-44b1-a14f-e663ed1a6bfa",
+      "name": "ServiceNow MCP Client",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "3L4RrgmiMa7dkHKj",
+          "name": "Bearer Auth account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AWS Bedrock Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Logistics MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retail MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ServiceNow MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ac9f0125-4ac5-413d-bad9-5ab85b7c4ff2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "318d440fa6f8dbb9ac3b93b05bc6eed9a557ee8dc2a3493924d30cc25077a474"
+  },
+  "id": "cAWW8siPfp5IFwpt",
+  "tags": []
+}
