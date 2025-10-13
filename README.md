@@ -1,6 +1,8 @@
 # agentic-logistics-incident-response
 
-# syste, 
+# diagram <br>
+![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Diagram.drawio.png?raw=true)
+
 
 breakdown is reported (or detected) and logged as an incident in ServiceNow
 
