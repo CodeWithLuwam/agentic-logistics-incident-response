@@ -96,7 +96,7 @@ the Incident Sys ID**
 
 ![]()
 
-## Agent 2: Route Financial Analysis Agent
+### Agent 2: Route Financial Analysis Agent
 *Purpose: Selects optimal routes and coordinates external execution*
 
 **Roles**
@@ -134,7 +134,7 @@ then update incident's priority, then communicate the decision to via web hook.
 **Look Up Delivery Delay** (Locate the Delivery Delay record by searching the table for the provided Route ID) <br>
 **Update Delivery Delay** (Finds records that match a specific Route ID and has Status = "Calculated", then updates the Status to "Approved") <br>
 **Update Incident** (Updates a specific Incident record by setting its Impact and Urgency fields based on agent-determined values) <br>
-**Trigger n8n Workflow** (webhook script tool) <br>
+**Trigger n8n Workflow** (webhook script tool - Automatically triggers external workflows in n8n when delivery delays occur, enabling automated responses like notifications, rerouting, or escalations.) <br>
 
 ---
 
