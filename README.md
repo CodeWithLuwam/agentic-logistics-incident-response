@@ -88,7 +88,7 @@ the Incident Sys ID**
 ```
 
 **Tools** <br>
-**Look Up Delivery Delay**(record lookup) <br>
+**Look Up Delivery Delay** (record lookup) <br>
 **Look Up Supply Agreement** (record lookup) <br>
 **Create Incident** (record creation) <br>
 **Update Delivery Delay** ( updates with calculated financial impact & updates status to Calculated) <br>
