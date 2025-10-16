@@ -42,7 +42,7 @@ Supply Agreement Table Fields:
 
 
 ## 3. AI Agent Setup
-**Agent 1: Route Financial Analysis Agent** <br>
+### Agent 1: Route Financial Analysis Agent <br>
 
 *Purpose*: Analyzes financial impact of delivery disruptions, calculates the cost of alternate routes, and creates incident tracking
 Tools Configured:
@@ -87,15 +87,63 @@ There will be a unique calculation for each of the ETA minutes.
 the Incident Sys ID**
 ```
 
-**Tools**
-Look Up Delivery Delay (record lookup)
-Look Up Supply Agreement (record lookup)
-Create Incident (record creation)
-Update Delivery Delay ( updates with calculated financial impact & updates status to Calculated)
-Financial Impact Calculation (script) ( Calculates the monetary impact of a delivery delay by converting ETA minutes to hours, comparing against the delivery window, and applying the stockout penalty rate.)
+**Tools** <br>
+**Look Up Delivery Delay**(record lookup) <br>
+**Look Up Supply Agreement** (record lookup) <br>
+**Create Incident** (record creation) <br>
+**Update Delivery Delay** ( updates with calculated financial impact & updates status to Calculated) <br>
+**Financial Impact Calculation** (script) ( Calculates the monetary impact of a delivery delay by converting ETA minutes to hours, comparing against the delivery window, and applying the stockout penalty rate.) <br>
 
 ![]()
+
+## Agent 2: Route Financial Analysis Agent
+*Purpose: Selects optimal routes and coordinates external execution*
+
+**Roles**
+```
+You will be provided with the Route ID.
+
+- First, locate the Delivery Delay record using the Route ID.
+- Second, choose the route option with the most cost-savings.
+- Third, Route ID's Delivery Delay record with the Decision and Truck ID.
+- Fourth, update the incident record.
+- Fifth, call the web hook to send Chosen Option to vendor.
+
+1. Use the provided Route ID to Pull Delivery Delay Details.
+
+2. Analyze the route options and select an option_id that optimizes the corresponding distance_miles and calculated_impact. Store the **entire route object** (including option_id, route_number, distance_miles, and eta_minutes) in your memory as Decision, not just the option_idd string. Decision must be a structured JSON object, not plain text.
+
+3. Update Delivery Delay Record of Route ID with the entire Decision JSON object, prepending the Route ID and Truck ID to the objet in the format "route_id": "truck_id":. Do not put the values for route_id and truck_id in quotations.
+
+4. Update the associated Incident record's Urgency based on financial severity. Use the following guidelines to set Urgency:
+- If the option cost LESS than $500, then set Urgency to 3- Low.
+- If the option cost BETWEEN $501- $1000, then set Urgency to 2- Medium.
+-  If the option cost MORE then $1000, then set Urgency to 1- High.
+
+5. Retrieve Webhook Value. You will use this data to trigger the webhook.
+
+6. Trigger n8n webhook with the Route ID and Retrieved Webhook Value.
+```
+**Description**
+```
+You will use the Route ID to find the optimal route based on cost and time constraint, then update the Delivery Record,
+then update incident's priority, then communicate the decision to via web hook.
+```
+
+**Tools** <br>
+**Look Up Delivery Delay** (Locate the Delivery Delay record by searching the table for the provided Route ID) <br>
+**Update Delivery Delay** (Finds records that match a specific Route ID and has Status = "Calculated", then updates the Status to "Approved") <br>
+**Update Incident** (Updates a specific Incident record by setting its Impact and Urgency fields based on agent-determined values) <br>
+**Trigger n8n Workflow** (webhook script tool) <br>
+
 ---
+
+
+
+
+
+
+
 
 breakdown is reported (or detected) and logged as an incident in ServiceNow
 
