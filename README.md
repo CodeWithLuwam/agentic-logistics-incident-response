@@ -1,10 +1,101 @@
 # agentic-logistics-incident-response
 
 # Overview <br>
-A supply chain automation platform was built to assess the monetary consequences of transport disruptions, determine optimal rerouting strategies, and manage external processes via AI-driven agents and workflow automation.
-Following repeated delivery slowdowns at PepsiCo, an initiative was launched to create an adaptive system that could compute route scenarios and timing estimates to select the option with the lowest financial impact.
+An automated supply chain incident processing system for PepsiCo's logistics operations. The system uses AI agents in ServiceNow to analyze financial impacts of delivery truck breakdowns, make optimal routing decisions, and coordinate external execution through workflow orchestration in n8n.
 # diagram <br>
 ![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Diagram.drawio.png?raw=true)
+
+
+# Implementation Steps
+## 1. ServiceNow Scoped Application
+Application name: PepsiCo Deliveries
+
+*This precise naming will auto-generate the scope: x_snc_pepsico_de_0*
+
+
+
+## 2. Table Setup <br>
+**Delivery Delay Table** holds the information about the various truck breakdowns reported from Schneider (Trucking Logistics Provider).
+
+Delivery Delay Table Fields:
+- `route_id` (Integer, Primary Key)
+- `truck_id` (Integer)
+- `customer_id` (Integer, Default: 1)
+- `problem_description` (String, 4000)
+- `proposed_routes` (String, 4000) - JSON format with route options
+- `calculated_impact` (String, 4000) - JSON format with financial analysis
+- `chosen_option` (String, 4000) - Selected route details
+- `status` (String, 16) - Workflow progression: pending/calculated/approved/dispatched
+- `assigned_to` (Reference to User) - Critical: Used for trigger execution context and permissions
+- `incident_sys_id` (String, 32) - Links to associated incident records
+
+
+**Supply Agreement Table** holds the contractual penalties for late shipments from Whole Foods (Retail Client).
+
+Supply Agreement Table Fields:
+- `customer_id` (Integer, Primary Key)
+- `customer_name` (String, 100)
+- `deliver_window_hours` (Integer) - Contractual delivery timeframe <br>
+  *(The contractual timeframe (in hours) within which deliveries must be completed to avoid penalties. For Whole Foods, deliveries must be completed within 3 hours of departure to avoid charges.)*
+- `stockout_penalty_rate` (Integer) - Cost per hour of delay in dollars <br>
+*(The financial penalty (in dollars) assessed for every hour a delivery exceeds the contractual delivery window. Whole Foods charges PepsiCo $250 for each hour beyond the 3-hour delivery window. For example, a 5-hour delivery would incur penalties for 2 hours (5 - 3 = 2 x 250), resulting in a $500 penalty charge.)*
+
+
+## 3. AI Agent Setup
+**Agent 1: Route Financial Analysis Agent** <br>
+
+*Purpose*: Analyzes financial impact of delivery disruptions, calculates the cost of alternate routes, and creates incident tracking
+Tools Configured:
+
+**Role**
+```
+You are a financial analysis specialist for PepsiCo's supply chain operations. Always format financial calculations
+clearly and ensure all monetary values are in USD. Always present the calculated financial impact to the user.
+```
+**Description**
+```
+Analyzes delivery disruptions by calculating penalty costs for each route option based on customer contract terms,
+creates incident records with appropriate priority levels, and prepares comprehensive financial impact data for
+route optimization decisions.
+```
+
+**Instructions**
+``` 
+When a delivery delay occurs, you must:
+1. **Retrieve Delivery Information**
+   1.1 Look up the delivery delay record using the provided route_id
+   1.2 pull the oldest route_id in status = pending
+   1.3 Store the proposed route in memory
+
+2. Use the Customer ID of the Delayed Delivery to Locate the Supply Agreement for the Customer. Store the numerical value
+Customer's Delivery Window Hours and numerical value for Stockout Penalty Rate in memory.
+
+FINANCIAL ANALYSIS INSTRUCTIONS
+3.1 There are multiple options in the proposed routes. Store the numerical value of each ETA Minutes in memory.  
+3.2 Run the Financial Impact Calculation tool separately for EACH of the delivery's proposed route option values.
+There will be a unique calculation for each of the ETA minutes.
+
+4. Return the Calculation for each proposed route combined in **USD with $** in the output format
+"Alternative Route Option 1 Calculated Impact: , Alternative Route Option 2 Calculated Impact: " with a line break after
+ each option. NOTE: IF THE CALCULATED IMPACT IS A NEGATIVE NUMBER, USE $0.00. This is the Calculated Impact. 
+4.1 Store the Calculated Impact in memory.
+
+5. **Create Incident Record**
+  5.1 save the sys_id value in your memory log
+
+6 **Update the Delivery Delay record that matches the user provided Route ID with the Calculated Impact and
+the Incident Sys ID**
+```
+
+**Tools**
+Look Up Delivery Delay (record lookup)
+Look Up Supply Agreement (record lookup)
+Create Incident (record creation)
+Update Delivery Delay ( updates with calculated financial impact & updates status to Calculated)
+Financial Impact Calculation (script) ( Calculates the monetary impact of a delivery delay by converting ETA minutes to hours, comparing against the delivery window, and applying the stockout penalty rate.)
+
+![]()
+---
 
 breakdown is reported (or detected) and logged as an incident in ServiceNow
 
