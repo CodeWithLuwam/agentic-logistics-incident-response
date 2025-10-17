@@ -7,14 +7,14 @@ An automated supply chain incident processing system for PepsiCo's logistics ope
 
 
 # Implementation Steps
-## 1. ServiceNow Scoped Application
+## Step 1.1: ServiceNow Scoped Application
 Application name: PepsiCo Deliveries
 
 *This precise naming will auto-generate the scope: x_snc_pepsico_de_0*
 
 
 
-## 2. Table Setup <br>
+## 1.2: Table Setup <br>
 **Delivery Delay Table** holds the information about the various truck breakdowns reported from Schneider (Trucking Logistics Provider).
 
 Delivery Delay Table Fields:
@@ -41,7 +41,7 @@ Supply Agreement Table Fields:
 *(The financial penalty (in dollars) assessed for every hour a delivery exceeds the contractual delivery window. Whole Foods charges PepsiCo $250 for each hour beyond the 3-hour delivery window. For example, a 5-hour delivery would incur penalties for 2 hours (5 - 3 = 2 x 250), resulting in a $500 penalty charge.)*
 
 
-## 3. AI Agent Setup
+## Step 2. AI Agent Setup
 ### Agent 1: Route Financial Analysis Agent <br>
 
 *Purpose*: Analyzes financial impact of delivery disruptions, calculates the cost of alternate routes, and creates incident tracking
@@ -135,6 +135,41 @@ then update incident's priority, then communicate the decision to via web hook.
 **Update Delivery Delay** (Finds records that match a specific Route ID and has Status = "Calculated", then updates the Status to "Approved") <br>
 **Update Incident** (Updates a specific Incident record by setting its Impact and Urgency fields based on agent-determined values) <br>
 **Trigger n8n Workflow** (webhook script tool - Automatically triggers external workflows in n8n when delivery delays occur, enabling automated responses like notifications, rerouting, or escalations.) <br>
+
+Key Responsibilities: <br>
+
+- Analyzes route options using financial impact calculations
+- Selects optimal routing based on lowest penalty cost
+- Updates incident priority based on financial severity:
+  - Penalty > $500: Priority 1 (Critical)
+  - Penalty $200-$500: Priority 2 (High)
+  - Penalty < $200: Priority 3 (Moderate)
+- Triggers external execution workflow via webhook to n8n
+- Updates workflow status to "approved" for tracking
+![]()
+
+### Step 3: Use Case and Trigger Setup
+use case is set up to utilize one data point across both agents for a consistent experience. I chose the route_id because it is a Primary Key in our Delivery Delay records.
+**Description** <br>
+```
+This use case is triggered when external agents relay a Delayed Delivery Route ID, runs a cost analysis on
+alternative routes, and make a recommendation best suited for business needs.
+```
+**Instructions**
+```
+When Pending Delivery Delay records are created or updated, then first run the Delivery Delay Financial Analyzer
+and THEN run the Route Decision Agent to select the most optimal alternative route.
+You will receive a Route ID.
+Store this Route ID in memory to run both Agents.
+Use the tools as exactly as directed.
+1. Use Financial Analyzer to find the calculated impact of delivery delay.
+2. Use the Route Decision Agent to choose the most optimal route.
+```
+![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Images/Describe%20and%20Connect%20Use%20Case.png?raw=true) <br>
+This use case is an automated trigger that monitors the Delivery Delay table records. It activates on create/update events when the status is 'Pending' and starts the AI analysis workflow to help resolve or manage the delay.
+
+## Step 4: n8n Workflow Setup
+The n8n AI agent receives webhook payloads containing routing decisions, coordinates execution with external logistics providers, sends customer notifications, and updates ServiceNow with execution status. The agent constructs appropriate payloads for each external system while maintaining consistent data flow.
 
 ---
 
