@@ -166,7 +166,8 @@ Use the tools as exactly as directed.
 2. Use the Route Decision Agent to choose the most optimal route.
 ```
 ![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Images/Describe%20and%20Connect%20Use%20Case.png?raw=true) <br>
-This use case is an automated trigger that monitors the Delivery Delay table records. It activates on create/update events when the status is 'Pending' and starts the AI analysis workflow to help resolve or manage the delay.
+This use case is an automated trigger that monitors the Delivery Delay table records. It activates on create/update events when the status is 'Pending' and starts the AI analysis workflow to help resolve or manage the delay. <br>
+![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Images/Use%20Case%20Trigger.png?raw=true) <br>
 
 ## Step 4: n8n Workflow Setup
 The n8n AI agent receives webhook payloads containing routing decisions, coordinates execution with external logistics providers, sends customer notifications, and updates ServiceNow with execution status. The agent constructs appropriate payloads for each external system while maintaining consistent data flow.
