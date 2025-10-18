@@ -170,7 +170,13 @@ This use case is an automated trigger that monitors the Delivery Delay table rec
 ![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Images/Use%20Case%20Trigger.png?raw=true) <br>
 
 ## Step 4: n8n Workflow Setup
-The n8n AI agent receives webhook payloads containing routing decisions, coordinates execution with external logistics providers, sends customer notifications, and updates ServiceNow with execution status. The agent constructs appropriate payloads for each external system while maintaining consistent data flow.
+Workflow Logic
+1. The n8n AI agent receives webhook payloads from ServiceNow **Route Decision Agent**. <br>
+2. Parse and validate payload structure. <br>
+3. Send data to **Logistics**, **Retail**, and **ServiceNow MCP systems**. <br>
+4. Confirm route dispatch and return a success message. <br>
+
+![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Images/n8n%20Workflow%20.png?raw=true)
 
 ---
 
