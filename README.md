@@ -251,6 +251,11 @@ Always call all three tools in sequence with the data provided.
 - Tool discovery capabilities for dynamic integration
 - Built-in authentication mechanisms
 
+## Future Optimization Opportunity
+**Automated Incident Resolution**
+Once dispatch confirmation is detected, the system triggers the Incident Resolver, automatically updating the ServiceNow incident’s state to Resolved, inserting structured resolution notes that specify the executed route option. This eliminates manual intervention by support analysts, maintaining SLA compliance and operational transparency.
+
+## Testing Results
 ---
 
 
