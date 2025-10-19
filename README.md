@@ -182,23 +182,56 @@ Workflow Logic
 - HTTP Method: `POST`
 - Respond: `Immediately`
 
-**Chat Model: AWS BEDROCK**
+### Chat Model: AWS BEDROCK
 - Model Source: `On-Demand Models`
 - Model: `open.ai.gpt-oss-120b-1:0` - selected for it's advanced ability to handle output to multiple tools.
 
-_Logistics MCP Client_
+### AI Agent
+- Source for Prompt : Define below
+- Prompt (User Message):
+```
+Process this delivery routing:
+
+{{ JSON.stringify($json.body) }} 
+
+Call all three MCP client tools now.
+
+For the Logistics MCP use this payload: 
+ {{ $json.body }}
+
+For the Retail MCP use this payload: 
+ {{ $json.body }}
+
+For the ServiceNow MCP use this payload: 
+{
+  route_id: {{ $json.body.route_id }},
+  status: "dispatched"
+}
+```
+- System Message:
+```
+You coordinate external system integration for PepsiCo delivery routing.
+
+When you receive delivery data, you must:
+1. Use the Logistics MCP Client tool to execute the route
+2. Use the Retail MCP Client tool to notify the customer
+3. Use the ServiceNow MCP Client tool to update status to "dispatched"
+
+Always call all three tools in sequence with the data provided.
+```
+### _Logistics MCP Client_
 - Purpose: Executes chosen route with logistics provider (**Schneider**)
 - Endpoint: _Schneider's MCP Server_ http://34.197.44.143:8001/mcp
 - Server Transport: `HTTP Streamable`
 - Tools to Include: `Selected` : `execute_route`
 
-_Retail MCP Client_
+### _Retail MCP Client_
 - Purpose: Sends delivery delay notifications to retail customer (**Whole Foods)**
 - Endpoint: _Whole Food's MCP Server_ http://34.197.44.143:8002/mcp
 - Server Transport: `HTTP Streamable`
 - Tools to Include: `Selected` : `notify_delivery_delay`
 
-_Retail MCP Client_
+### _ServiceNow MCP Client_
 - Purpose: Updates delivery status in **ServiceNow** to "dispatched"
 - Endpoint: _PepsiCo's ServiceNow MCP Server_ http://34.197.44.143:8000/mcp
 - Server Transport: `HTTP Streamable`
