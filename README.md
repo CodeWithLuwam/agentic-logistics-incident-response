@@ -96,7 +96,7 @@ the Incident Sys ID**
 
 ![]()
 
-### Agent 2: Route Financial Analysis Agent
+### Agent 2: Route Decision Agent
 *Purpose: Selects optimal routes and coordinates external execution*
 
 **Roles**
