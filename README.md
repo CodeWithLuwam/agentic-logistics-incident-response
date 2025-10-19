@@ -178,6 +178,39 @@ Workflow Logic
 
 ![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Images/n8n%20Workflow%20.png?raw=true)
 
+### Webhook
+- HTTP Method: `POST`
+- Respond: `Immediately`
+
+**Chat Model: AWS BEDROCK**
+- Model Source: `On-Demand Models`
+- Model: `open.ai.gpt-oss-120b-1:0` - selected for it's advanced ability to handle output to multiple tools.
+
+_Logistics MCP Client_
+- Purpose: Executes chosen route with logistics provider (**Schneider**)
+- Endpoint: _Schneider's MCP Server_ http://34.197.44.143:8001/mcp
+- Server Transport: `HTTP Streamable`
+- Tools to Include: `Selected` : `execute_route`
+
+_Retail MCP Client_
+- Purpose: Sends delivery delay notifications to retail customer (**Whole Foods)**
+- Endpoint: _Whole Food's MCP Server_ http://34.197.44.143:8002/mcp
+- Server Transport: `HTTP Streamable`
+- Tools to Include: `Selected` : `notify_delivery_delay`
+
+_Retail MCP Client_
+- Purpose: Updates delivery status in **ServiceNow** to "dispatched"
+- Endpoint: _PepsiCo's ServiceNow MCP Server_ http://34.197.44.143:8000/mcp
+- Server Transport: `HTTP Streamable`
+- Authentication `Bearer Auth` - needed to make updates to records in private, internal system.
+- Tools to Include: `Selected` : `update_execution_status`
+
+**Protocol Choice**: Model Context Protocol (MCP) was selected for external system integration because it provides:
+- Standardized JSON-RPC 2.0 communication
+- Server-Sent Events (SSE) support for streaming responses
+- Tool discovery capabilities for dynamic integration
+- Built-in authentication mechanisms
+
 ---
 
 
