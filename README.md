@@ -67,8 +67,8 @@ When a delivery delay occurs, you must:
    1.2 pull the oldest route_id in status = pending
    1.3 Store the proposed route in memory
 
-2. Use the Customer ID of the Delayed Delivery to Locate the Supply Agreement for the Customer. Store the numerical value
-Customer's Delivery Window Hours and numerical value for Stockout Penalty Rate in memory.
+2. Use the Customer ID of the Delayed Delivery to Locate the Supply Agreement for the Customer. Store the numerical
+value Customer's Delivery Window Hours and numerical value for Stockout Penalty Rate in memory.
 
 FINANCIAL ANALYSIS INSTRUCTIONS
 3.1 There are multiple options in the proposed routes. Store the numerical value of each ETA Minutes in memory.  
@@ -76,8 +76,8 @@ FINANCIAL ANALYSIS INSTRUCTIONS
 There will be a unique calculation for each of the ETA minutes.
 
 4. Return the Calculation for each proposed route combined in **USD with $** in the output format
-"Alternative Route Option 1 Calculated Impact: , Alternative Route Option 2 Calculated Impact: " with a line break after
- each option. NOTE: IF THE CALCULATED IMPACT IS A NEGATIVE NUMBER, USE $0.00. This is the Calculated Impact. 
+"Alternative Route Option 1 Calculated Impact: , Alternative Route Option 2 Calculated Impact: " with a line break
+after each option. NOTE: IF THE CALCULATED IMPACT IS A NEGATIVE NUMBER, USE $0.00. This is the Calculated Impact. 
 4.1 Store the Calculated Impact in memory.
 
 5. **Create Incident Record**
@@ -111,14 +111,20 @@ You will be provided with the Route ID.
 
 1. Use the provided Route ID to Pull Delivery Delay Details.
 
-2. Analyze the route options and select an option_id that optimizes the corresponding distance_miles and calculated_impact. Store the **entire route object** (including option_id, route_number, distance_miles, and eta_minutes) in your memory as Decision, not just the option_idd string. Decision must be a structured JSON object, not plain text.
+2. Analyze the route options and select an option_id that optimizes the corresponding distance_miles and
+calculated_impact. Store the **entire route object** (including option_id, route_number, distance_miles,
+and eta_minutes) in your memory as Decision, not just the option_idd string. Decision must be a structured
+JSON object, not plain text.
 
-3. Update Delivery Delay Record of Route ID with the entire Decision JSON object, prepending the Route ID and Truck ID to the objet in the format "route_id": "truck_id":. Do not put the values for route_id and truck_id in quotations.
+3. Update Delivery Delay Record of Route ID with the entire Decision JSON object, prepending the Route ID
+and Truck ID to the objet in the format "route_id": "truck_id":. Do not put the values for route_id and
+truck_id in quotations.
 
-4. Update the associated Incident record's Urgency based on financial severity. Use the following guidelines to set Urgency:
+4. Update the associated Incident record's Urgency based on financial severity. Use the following guidelines
+to set Urgency:
 - If the option cost LESS than $500, then set Urgency to 3- Low.
 - If the option cost BETWEEN $501- $1000, then set Urgency to 2- Medium.
--  If the option cost MORE then $1000, then set Urgency to 1- High.
+- If the option cost MORE then $1000, then set Urgency to 1- High.
 
 5. Retrieve Webhook Value. You will use this data to trigger the webhook.
 
@@ -126,8 +132,8 @@ You will be provided with the Route ID.
 ```
 **Description**
 ```
-You will use the Route ID to find the optimal route based on cost and time constraint, then update the Delivery Record,
-then update incident's priority, then communicate the decision to via web hook.
+You will use the Route ID to find the optimal route based on cost and time constraint, then update the
+Delivery Record, then update incident's priority, then communicate the decision to via web hook.
 ```
 
 **Tools** <br>
