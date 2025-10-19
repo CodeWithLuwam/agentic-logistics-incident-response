@@ -14,7 +14,7 @@ Application name: PepsiCo Deliveries
 
 
 
-## 1.2: Table Setup <br>
+### 1.2: Table Setup <br>
 **Delivery Delay Table** holds the information about the various truck breakdowns reported from Schneider (Trucking Logistics Provider).
 
 Delivery Delay Table Fields:
