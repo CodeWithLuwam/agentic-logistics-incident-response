@@ -2,7 +2,8 @@
 
 # Overview <br>
 An automated supply chain incident processing system for PepsiCo's logistics operations. The system uses AI agents in ServiceNow to analyze financial impacts of delivery truck breakdowns, make optimal routing decisions, and coordinate external execution through workflow orchestration in n8n.
-# diagram <br>
+
+# Diagram <br>
 ![](https://github.com/CodeWithLuwam/agentic-logistics-incident-response/blob/main/Diagram.drawio.png?raw=true)
 
 
