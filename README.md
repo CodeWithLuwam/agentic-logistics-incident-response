@@ -89,11 +89,11 @@ the Incident Sys ID**
 ```
 
 **Tools** <br>
-**Look Up Delivery Delay** (record lookup) <br>
-**Look Up Supply Agreement** (record lookup) <br>
-**Create Incident** (record creation) <br>
-**Update Delivery Delay** ( updates with calculated financial impact & updates status to Calculated) <br>
-**Financial Impact Calculation** (script) ( Calculates the monetary impact of a delivery delay by converting ETA minutes to hours, comparing against the delivery window, and applying the stockout penalty rate.) <br>
+`Look Up Delivery Delay` (record lookup) <br>
+`Look Up Supply Agreement` (record lookup) <br>
+`Create Incident` (record creation) <br>
+`Update Delivery Delay` ( updates with calculated financial impact & updates status to Calculated) <br>
+`Financial Impact Calculation` (script) ( Calculates the monetary impact of a delivery delay by converting ETA minutes to hours, comparing against the delivery window, and applying the stockout penalty rate.) <br>
 
 ![]()
 
@@ -138,10 +138,10 @@ Delivery Record, then update incident's priority, then communicate the decision 
 ```
 
 **Tools** <br>
-**Look Up Delivery Delay** (Locate the Delivery Delay record by searching the table for the provided Route ID) <br>
-**Update Delivery Delay** (Finds records that match a specific Route ID and has Status = "Calculated", then updates the Status to "Approved") <br>
-**Update Incident** (Updates a specific Incident record by setting its Impact and Urgency fields based on agent-determined values) <br>
-**Trigger n8n Workflow** (webhook script tool - Automatically triggers external workflows in n8n when delivery delays occur, enabling automated responses like notifications, rerouting, or escalations.) <br>
+`Look Up Delivery Delay` (Locate the Delivery Delay record by searching the table for the provided Route ID) <br>
+`Update Delivery Delay` (Finds records that match a specific Route ID and has Status = "Calculated", then updates the Status to "Approved") <br>
+`Update Incident` (Updates a specific Incident record by setting its Impact and Urgency fields based on agent-determined values) <br>
+`Trigger n8n Workflow` (webhook script tool - Automatically triggers external workflows in n8n when delivery delays occur, enabling automated responses like notifications, rerouting, or escalations.) <br>
 
 Key Responsibilities: <br>
 
